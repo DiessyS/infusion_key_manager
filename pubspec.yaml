@@ -1,0 +1,25 @@
+name: infusion_key_manager
+description: "Internal kit for Infusion application"
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.5.4
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  serializable:
+    git:
+      url: https://github.com/DiessyS/serializable.git
+      ref: main
+
+  flutter_secure_storage: ^9.2.2
+  cryptography: ^2.5.0
+  cryptography_flutter: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
