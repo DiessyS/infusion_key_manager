@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:cryptography/cryptography.dart';
-import 'package:cryptography/helpers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:infusion_key_manager/core/key_build/data/key_options.dart';
 
@@ -8,20 +9,7 @@ import 'data/key_props.dart';
 class KeyBuild {
   Argon2id? _argon2Id;
 
-  Future<bool> checkHash({
-    required Uint8List userKey,
-    required Uint8List hash,
-    required KeyOptions options,
-    required int digestLength,
-  }) async {
-    final Uint8List userHash = await build(
-      secretKey: userKey,
-      options: options,
-      digestLength: digestLength,
-    );
-    return listEquals(userHash, hash);
-  }
-
+  /// Argon2id password build
   Future<Uint8List> build({
     required Uint8List secretKey,
     required KeyOptions options,
@@ -37,9 +25,25 @@ class KeyBuild {
     return await compute(_syncBuild, props);
   }
 
-  Uint8List generateSalt() {
-    const int recommendedSaltLength = 16;
-    return randomBytes(recommendedSaltLength);
+  /// Sha256 password hashing (bad for public available passwords)
+  Future<String> buildWithSha256(String password) async {
+    final Uint8List passwordBytes = utf8.encode(password);
+    final Hash hash = await Sha256().hash(passwordBytes);
+    return hash.toString();
+  }
+
+  Future<bool> checkAsHash({
+    required Uint8List userKey,
+    required Uint8List hash,
+    required KeyOptions options,
+    required int digestLength,
+  }) async {
+    final Uint8List userHash = await build(
+      secretKey: userKey,
+      options: options,
+      digestLength: digestLength,
+    );
+    return listEquals(userHash, hash);
   }
 
   Future<Uint8List> _syncBuild(KeyProps props) async {

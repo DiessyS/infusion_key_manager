@@ -1,13 +1,25 @@
 import 'dart:typed_data';
+import 'package:cryptography/helpers.dart';
 import 'package:serializable/serializable.dart';
 
 import 'argon_params.dart';
 
 class KeyOptions extends Serializable {
   Uint8List salt = Uint8List(0);
+  final int _saltLength = 16;
   ArgonParams argonParams = ArgonParams.getForDerive();
 
   KeyOptions();
+
+  KeyOptions.forDerive() {
+    salt = randomBytes(_saltLength);
+    argonParams = ArgonParams.getForDerive();
+  }
+
+  KeyOptions.forHash() {
+    salt = randomBytes(_saltLength);
+    argonParams = ArgonParams.getForHashing();
+  }
 
   @override
   fromJson(Map<String, dynamic> map) {
