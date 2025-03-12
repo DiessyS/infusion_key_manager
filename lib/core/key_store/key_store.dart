@@ -11,14 +11,15 @@ class KeyStore extends KeyStoreCore {
 
   Future store({
     required Uint8List key,
+    String? customAddress,
   }) async {
-    final String address = await buildAddress();
+    final String address = await buildAddress(keyName: customAddress ?? '');
     await secureStorage.write(key: address, value: base64.encode(key));
     _keyReady = true;
   }
 
-  Future<Uint8List?> read() async {
-    final String address = await buildAddress();
+  Future<Uint8List?> read({String? customAddress}) async {
+    final String address = await buildAddress(keyName: customAddress ?? '');
     final String? key = await secureStorage.read(key: address);
     return key == null ? null : base64.decode(key);
   }
