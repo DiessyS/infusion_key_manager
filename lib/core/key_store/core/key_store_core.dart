@@ -18,7 +18,7 @@ class KeyStoreCore {
             storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
           ),
         ),
-        base = 'key_store__',
+        base = 'key_store_',
         signature = Uint8List(0);
 
   void initializeSignature(Uint8List signature) {
@@ -27,16 +27,20 @@ class KeyStoreCore {
 
   Future<String> buildAddress({String keyName = ''}) async {
     if (signature.isEmpty) {
-      throw ArgumentError('the signature cannot be empty.');
+      throw Exception(
+        'Signature is not initialized. Please call initializeSignature() first.',
+      );
     }
 
     final Sha1 sha1 = Sha1();
     final List<int> unmixedAddress = signature + utf8.encode(keyName);
-    return "${getFullPrefix()}${(await sha1.hash(unmixedAddress)).toString()}";
+    final hash = (await sha1.hash(unmixedAddress)).bytes;
+
+    return "${getFullPrefix()}${base64.encode(hash)}";
   }
 
   String getFullPrefix() {
-    return '$base$prefix';
+    return '$base${prefix}_';
   }
 
   Future<void> dispose() async {

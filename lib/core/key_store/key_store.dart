@@ -7,7 +7,7 @@ class KeyStore extends KeyStoreCore {
   bool _keyReady = false;
   bool get keyReady => _keyReady;
 
-  KeyStore() : super(prefix: 'store__');
+  KeyStore() : super(prefix: 'store_');
 
   Future store({
     required Uint8List key,

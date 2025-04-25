@@ -24,12 +24,17 @@ class KeyCache extends KeyStoreCore {
 
   Future<void> clearCache() async {
     final Map<String, String> keys = await secureStorage.readAll();
-    final String prefix = getFullPrefix();
-    final Iterable<String> keysToDelete =
-        keys.keys.where((key) => key.startsWith(prefix));
 
-    await Future.wait(
-      keysToDelete.map((key) => secureStorage.delete(key: key)),
-    );
+    if (keys.isEmpty) {
+      return;
+    }
+
+    final String prefix = getFullPrefix();
+    final List<String> keysToDelete =
+        keys.keys.where((key) => key.startsWith(prefix)).toList();
+
+    for (var key in keysToDelete) {
+      await secureStorage.delete(key: key);
+    }
   }
 }
