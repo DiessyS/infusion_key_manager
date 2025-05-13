@@ -21,6 +21,19 @@ class KeyOptions extends Serializable {
     argonParams = ArgonParams.getForHashing();
   }
 
+  KeyOptions.custom({
+    required int memory,
+    required int parallelism,
+    required int iterations,
+  }) {
+    salt = randomBytes(_saltLength);
+    argonParams = ArgonParams(
+      memory: memory,
+      parallelism: parallelism,
+      iterations: iterations,
+    );
+  }
+
   @override
   fromJson(Map<String, dynamic> map) {
     salt = Uint8List.fromList(map['s'].cast<int>());
