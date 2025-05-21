@@ -14,4 +14,11 @@ enum ResourceUsageProfile {
     this.iteration,
     this.parallelism,
   );
+
+  static ResourceUsageProfile fromId(int id) {
+    return ResourceUsageProfile.values.firstWhere(
+      (element) => element.id == id,
+      orElse: () => ResourceUsageProfile.balanced,
+    );
+  }
 }
