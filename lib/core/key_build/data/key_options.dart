@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:cryptography/helpers.dart';
+import 'package:infusion_key_manager/core/key_build/enum/resource_usage_profile.dart';
 import 'package:serializable/serializable.dart';
 
 import 'argon_params.dart';
@@ -21,16 +22,14 @@ class KeyOptions extends Serializable {
     argonParams = ArgonParams.getForHashing();
   }
 
-  KeyOptions.custom({
-    required int memory,
-    required int parallelism,
-    required int iterations,
+  KeyOptions.byResourceUsageProfile({
+    required ResourceUsageProfile profile,
   }) {
     salt = randomBytes(_saltLength);
     argonParams = ArgonParams(
-      memory: memory,
-      parallelism: parallelism,
-      iterations: iterations,
+      memory: profile.memory,
+      parallelism: profile.parallelism,
+      iterations: profile.iteration,
     );
   }
 
