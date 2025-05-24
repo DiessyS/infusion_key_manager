@@ -27,6 +27,15 @@ class KeyOptions extends Serializable {
     );
   }
 
+  KeyOptions.empty() {
+    salt = Uint8List(_saltLength);
+    argonParams = ArgonParams(
+      memory: ResourceUsageProfile.minimal.memory,
+      parallelism: ResourceUsageProfile.minimal.parallelism,
+      iterations: ResourceUsageProfile.minimal.iteration,
+    );
+  }
+
   @override
   fromJson(Map<String, dynamic> map) {
     salt = Uint8List.fromList(map['s'].cast<int>());
