@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infusion_key_manager/core/key_build/data/key_options.dart';
+import 'package:infusion_key_manager/core/key_build/enum/resource_usage_profile.dart';
 import 'package:infusion_key_manager/core/key_build/key_build.dart';
 
 void main() {
@@ -13,7 +14,9 @@ void main() {
     test('KeyBuild should build a key', () async {
       final keyBuild = KeyBuild();
       final Uint8List secretKey = Uint8List.fromList([1, 2, 3, 4]);
-      final KeyOptions options = KeyOptions();
+      final KeyOptions options = KeyOptions(
+        profile: ResourceUsageProfile.balanced,
+      );
       const int digestLength = 32;
 
       final Uint8List result = await keyBuild.build(
@@ -38,7 +41,9 @@ void main() {
       final keyBuild = KeyBuild();
       final Uint8List secret = Uint8List.fromList([1, 2, 3, 4]);
       final Uint8List userKey = Uint8List.fromList([1, 2, 3, 4]);
-      final KeyOptions options = KeyOptions();
+      final KeyOptions options = KeyOptions(
+        profile: ResourceUsageProfile.balanced,
+      );
       const int digestLength = 32;
 
       final Uint8List hash = await keyBuild.build(
