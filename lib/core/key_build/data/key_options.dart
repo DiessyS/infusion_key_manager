@@ -8,7 +8,7 @@ import 'argon_params.dart';
 class KeyOptions extends Serializable {
   Uint8List salt = Uint8List(0);
   final int _saltLength = 16;
-  late final ArgonParams argonParams;
+  late ArgonParams argonParams;
 
   KeyOptions({required ResourceUsageProfile profile}) {
     salt = randomBytes(_saltLength);
@@ -20,11 +20,10 @@ class KeyOptions extends Serializable {
   }
 
   KeyOptions.empty() {
-    salt = Uint8List(_saltLength);
     argonParams = ArgonParams(
-      memory: ResourceUsageProfile.minimal.memory,
-      parallelism: ResourceUsageProfile.minimal.parallelism,
-      iterations: ResourceUsageProfile.minimal.iteration,
+      memory: 0,
+      parallelism: 0,
+      iterations: 0,
     );
   }
 
