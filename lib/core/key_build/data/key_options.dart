@@ -10,18 +10,10 @@ class KeyOptions extends Serializable {
   final int _saltLength = 16;
   late final ArgonParams argonParams;
 
-  KeyOptions({
-    required ResourceUsageProfile profile,
-    bool memoryReinforcement = false,
-  }) {
-    const int memoryReinforcementFactor = 8;
-    final int memory = memoryReinforcement
-        ? profile.memory * memoryReinforcementFactor
-        : profile.memory;
-
+  KeyOptions({required ResourceUsageProfile profile}) {
     salt = randomBytes(_saltLength);
     argonParams = ArgonParams(
-      memory: memory,
+      memory: profile.memory,
       parallelism: profile.parallelism,
       iterations: profile.iteration,
     );
