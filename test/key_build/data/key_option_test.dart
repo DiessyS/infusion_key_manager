@@ -54,5 +54,22 @@ void main() {
         ResourceUsageProfile.high.iteration,
       );
     });
+
+    test('Default KeyOptions should have correct values (ultra)', () {
+      final keyOptions = KeyOptions(profile: ResourceUsageProfile.ultra);
+      expect(keyOptions.salt.length, 16);
+      expect(
+        keyOptions.argonParams.memory,
+        ResourceUsageProfile.ultra.memory,
+      );
+      expect(
+        keyOptions.argonParams.parallelism,
+        ResourceUsageProfile.ultra.parallelism,
+      );
+      expect(
+        keyOptions.argonParams.iterations,
+        ResourceUsageProfile.ultra.iteration,
+      );
+    });
   });
 }

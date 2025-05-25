@@ -1,4 +1,0 @@
-enum KeyBuildType {
-  hashing,
-  derive,
-}
