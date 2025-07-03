@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:cryptography/helpers.dart';
+import 'package:cryptography_plus/helpers.dart';
 import 'package:infusion_key_manager/core/key_build/enum/resource_usage_profile.dart';
 import 'package:serializable/serializable.dart';
 
