@@ -28,15 +28,6 @@ void main() {
       expect(result, isA<Uint8List>());
     });
 
-    test('KeyBuild should build a key with SHA256', () async {
-      final keyBuild = KeyBuild();
-      const String password = 'password';
-
-      final String result = await keyBuild.buildWithSha256(password);
-
-      expect(result, isA<String>());
-    });
-
     test('KeyBuild should check a hash', () async {
       final keyBuild = KeyBuild();
       final Uint8List secret = Uint8List.fromList([1, 2, 3, 4]);
