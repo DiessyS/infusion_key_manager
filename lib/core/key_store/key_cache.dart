@@ -22,6 +22,13 @@ class KeyCache extends KeyStoreCore {
     return key == null ? null : base64.decode(key);
   }
 
+  Future<void> invalidate({
+    String cacheIdentifier = '',
+  }) async {
+    final String address = await buildAddress(keyName: cacheIdentifier);
+    await secureStorage.delete(key: address);
+  }
+
   Future<void> clearCache() async {
     final Map<String, String> keys = await secureStorage.readAll();
 

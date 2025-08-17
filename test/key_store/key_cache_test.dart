@@ -90,4 +90,25 @@ void main() {
     expect(retrievedKey1, null);
     expect(retrievedKey2, null);
   });
+
+  test('KeyCache should invalidate a specific key', () async {
+    FlutterSecureStorage.setMockInitialValues({});
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final keyCache = KeyCache()..initializeSignature(Uint8List(2));
+    final Uint8List testKey = Uint8List.fromList([1, 2, 3, 4, 5]);
+    const String cacheIdentifier = 'test_key';
+
+    await keyCache.store(key: testKey, cacheIdentifier: cacheIdentifier);
+    final bool isKeyStored =
+        (await keyCache.read(cacheIdentifier: cacheIdentifier)) != null;
+    await keyCache.invalidate(cacheIdentifier: cacheIdentifier);
+
+    final Uint8List? retrievedKey =
+        await keyCache.read(cacheIdentifier: cacheIdentifier);
+
+    expect(isKeyStored, true,
+        reason: 'Key should be stored before invalidation');
+    expect(retrievedKey, null);
+  });
 }
