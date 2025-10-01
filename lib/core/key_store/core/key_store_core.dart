@@ -6,9 +6,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class KeyStoreCore {
   final FlutterSecureStorage secureStorage;
-  final String base;
+  final String _base;
   final String prefix;
-  Uint8List signature;
+  Uint8List _signature;
 
   KeyStoreCore({required this.prefix})
       : secureStorage = const FlutterSecureStorage(
@@ -18,32 +18,41 @@ class KeyStoreCore {
             storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
           ),
         ),
-        base = 'key_store_',
-        signature = Uint8List(0);
+        _base = 'key_store_',
+        _signature = Uint8List(0);
 
   void initializeSignature(Uint8List signature) {
-    this.signature = signature;
+    _signature = signature;
   }
 
   Future<String> buildAddress({String keyName = ''}) async {
-    if (signature.isEmpty) {
+    if (!hasSignature()) {
       throw Exception(
         'Signature is not initialized. Please call initializeSignature() first.',
       );
     }
 
-    final Sha1 sha1 = Sha1();
-    final List<int> unmixedAddress = signature + utf8.encode(keyName);
-    final hash = (await sha1.hash(unmixedAddress)).bytes;
+    final sha1 = Sha1();
+    final sink = sha1.newHashSink();
 
-    return "${getFullPrefix()}${base64.encode(hash)}";
+    sink.add(_signature);
+    sink.add(utf8.encode(keyName));
+    sink.close();
+
+    final hash = await sink.hash();
+
+    return "${getFullPrefix()}${hash.toString()}";
+  }
+
+  bool hasSignature() {
+    return _signature.isNotEmpty;
   }
 
   String getFullPrefix() {
-    return '$base${prefix}_';
+    return '$_base${prefix}_';
   }
 
   Future<void> dispose() async {
-    signature = Uint8List(0);
+    _signature = Uint8List(0);
   }
 }

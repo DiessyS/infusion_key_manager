@@ -4,18 +4,18 @@ import 'dart:typed_data';
 import 'core/key_store_core.dart';
 
 class KeyCache extends KeyStoreCore {
-  KeyCache() : super(prefix: 'cache__');
+  KeyCache() : super(prefix: 'cache_');
 
   Future store({
     required Uint8List key,
-    String cacheIdentifier = '',
+    required String cacheIdentifier,
   }) async {
     final String address = await buildAddress(keyName: cacheIdentifier);
     await secureStorage.write(key: address, value: base64.encode(key));
   }
 
   Future<Uint8List?> read({
-    String cacheIdentifier = '',
+    required String cacheIdentifier,
   }) async {
     final String address = await buildAddress(keyName: cacheIdentifier);
     final String? key = await secureStorage.read(key: address);
@@ -23,7 +23,7 @@ class KeyCache extends KeyStoreCore {
   }
 
   Future<void> invalidate({
-    String cacheIdentifier = '',
+    required String cacheIdentifier,
   }) async {
     final String address = await buildAddress(keyName: cacheIdentifier);
     await secureStorage.delete(key: address);
@@ -37,8 +37,11 @@ class KeyCache extends KeyStoreCore {
     }
 
     final String prefix = getFullPrefix();
-    final List<String> keysToDelete =
-        keys.keys.where((key) => key.startsWith(prefix)).toList();
+    final List<String> keysToDelete = keys.keys
+        .where(
+          (key) => key.startsWith(prefix),
+        )
+        .toList();
 
     for (var key in keysToDelete) {
       await secureStorage.delete(key: key);

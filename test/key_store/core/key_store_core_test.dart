@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infusion_key_manager/core/key_store/core/key_store_core.dart';
 
@@ -40,7 +41,7 @@ void main() {
       final keyStoreCore = KeyStoreCore(prefix: 'test_prefix');
       keyStoreCore.initializeSignature(Uint8List.fromList([1, 2, 3, 4, 5]));
       await keyStoreCore.dispose();
-      expect(keyStoreCore.signature.isEmpty, true);
+      expect(keyStoreCore.hasSignature(), false);
     });
   });
 }

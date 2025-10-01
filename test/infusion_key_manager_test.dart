@@ -1,7 +1,8 @@
-import 'package:infusion_key_manager/infusion_key_manager.dart';
+import 'dart:typed_data';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'dart:typed_data';
+import 'package:infusion_key_manager/infusion_key_manager.dart';
 
 void main() {
   group('InfusionKeyManager', () {
@@ -20,13 +21,13 @@ void main() {
     test('should dispose the signature from keyStore and keyCache', () async {
       FlutterSecureStorage.setMockInitialValues({});
 
-      keyManager.keyStore.signature = Uint8List(2);
-      keyManager.keyCache.signature = Uint8List(2);
+      keyManager.keyStore.initializeSignature(Uint8List(2));
+      keyManager.keyCache.initializeSignature(Uint8List(2));
 
       await keyManager.dispose();
 
-      expect(keyManager.keyStore.signature, []);
-      expect(keyManager.keyCache.signature, []);
+      expect(keyManager.keyStore.hasSignature(), false);
+      expect(keyManager.keyCache.hasSignature(), false);
     });
   });
 }
