@@ -25,8 +25,8 @@ class KeyStore extends KeyStoreCore {
   }
 
   @override
-  Future<void> dispose() async {
-    final String address = await buildAddress();
+  Future<void> dispose({String? customAddress}) async {
+    final String address = await buildAddress(keyName: customAddress ?? '');
     await secureStorage.delete(key: address);
     _keyReady = false;
     super.dispose();

@@ -5,11 +5,11 @@ import 'package:infusion_key_manager/core/key_build/data/key_options.dart';
 import 'data/key_props.dart';
 
 class KeyBuild {
-  /// Argon2id password build
   Future<Uint8List> build({
     required Uint8List secretKey,
     required KeyOptions options,
     required int digestLength,
+    List<int> pepper = const [],
   }) async {
     final Argon2id argon2Id = Argon2id(
       memory: options.argonParams.memory,
@@ -21,6 +21,7 @@ class KeyBuild {
     final SecretKey derivation = await argon2Id.deriveKey(
       secretKey: SecretKey(props.key),
       nonce: props.salt,
+      optionalSecret: pepper,
     );
     return Uint8List.fromList(await derivation.extractBytes());
   }
@@ -30,11 +31,13 @@ class KeyBuild {
     required Uint8List hash,
     required KeyOptions options,
     required int digestLength,
+    List<int> pepper = const [],
   }) async {
     final Uint8List userHash = await build(
       secretKey: userKey,
       options: options,
       digestLength: digestLength,
+      pepper: pepper,
     );
     return listEquals(userHash, hash);
   }
