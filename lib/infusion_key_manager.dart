@@ -1,25 +1,37 @@
 library infusion_key_manager;
 
 import 'package:infusion_key_manager/core/key_build/key_build.dart';
+import 'package:infusion_key_manager/core/key_store/key_bundle.dart';
 import 'package:infusion_key_manager/core/key_store/key_cache.dart';
 import 'package:infusion_key_manager/core/key_store/key_store.dart';
 
 class InfusionKeyManager {
-  final KeyBuild _keyBuild;
-  final KeyStore _keyStore;
-  final KeyCache _keyCache;
+  KeyBuild? _keyBuild;
+  KeyStore? _keyStore;
+  KeyCache? _keyCache;
+  KeyBundle? _keyBundle;
 
-  KeyBuild get keyBuild => _keyBuild;
-  KeyStore get keyStore => _keyStore;
-  KeyCache get keyCache => _keyCache;
+  /// Argonid2 Wrapper for key derivation and equality check
+  KeyBuild get keyBuild => _keyBuild ??= KeyBuild();
 
-  InfusionKeyManager()
-      : _keyBuild = KeyBuild(),
-        _keyStore = KeyStore(),
-        _keyCache = KeyCache();
+  /// Securely stores a master key (one) on secure storage
+  KeyStore get keyStore => _keyStore ??= KeyStore();
+
+  /// Securely caches derived keys on secure storage
+  KeyCache get keyCache => _keyCache ??= KeyCache();
+
+  /// Securely stores multiple keys on secure storage
+  KeyBundle get keyBundle => _keyBundle ??= KeyBundle();
+
+  InfusionKeyManager();
 
   Future<void> dispose() async {
-    await _keyStore.dispose();
-    _keyCache.dispose();
+    if (_keyStore != null) await _keyStore!.dispose();
+    _keyCache?.dispose();
+    _keyBundle?.dispose();
+    _keyBuild = null;
+    _keyStore = null;
+    _keyCache = null;
+    _keyBundle = null;
   }
 }

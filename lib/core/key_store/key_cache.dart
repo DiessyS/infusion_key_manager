@@ -1,50 +1,36 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'core/key_store_core.dart';
+import 'package:infusion_key_manager/core/key_store/core/key_generic.dart';
+import 'package:infusion_key_manager/core/key_store/dto/key_data.dart';
 
-class KeyCache extends KeyStoreCore {
-  KeyCache() : super(prefix: 'cache_');
+class KeyCache extends KeyGeneric {
+  KeyCache() : super('cache');
 
   Future store({
-    required Uint8List key,
-    required String cacheIdentifier,
+    required KeyData key,
   }) async {
-    final String address = await buildAddress(keyName: cacheIdentifier);
-    await secureStorage.write(key: address, value: base64.encode(key));
+    await genericStore(key: key);
   }
 
   Future<Uint8List?> read({
     required String cacheIdentifier,
   }) async {
-    final String address = await buildAddress(keyName: cacheIdentifier);
-    final String? key = await secureStorage.read(key: address);
-    return key == null ? null : base64.decode(key);
+    return await genericRead(address: cacheIdentifier);
   }
 
   Future<void> invalidate({
     required String cacheIdentifier,
   }) async {
-    final String address = await buildAddress(keyName: cacheIdentifier);
-    await secureStorage.delete(key: address);
+    await genericDispose(
+      address: cacheIdentifier,
+      disposeSignatureSystem: false,
+    );
   }
 
   Future<void> clearCache() async {
-    final Map<String, String> keys = await secureStorage.readAll();
-
-    if (keys.isEmpty) {
-      return;
-    }
-
-    final String prefix = getFullPrefix();
-    final List<String> keysToDelete = keys.keys
-        .where(
-          (key) => key.startsWith(prefix),
-        )
-        .toList();
-
-    for (var key in keysToDelete) {
-      await secureStorage.delete(key: key);
+    final List<KeyData> allKeys = await dump();
+    for (var key in allKeys) {
+      await secureStorage.delete(key: key.address);
     }
   }
 }
