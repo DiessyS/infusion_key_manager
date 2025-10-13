@@ -1,5 +1,7 @@
 library infusion_key_manager;
 
+import 'dart:typed_data';
+
 import 'package:infusion_key_manager/core/key_build/key_build.dart';
 import 'package:infusion_key_manager/core/key_store/key_bundle.dart';
 import 'package:infusion_key_manager/core/key_store/key_cache.dart';
@@ -24,6 +26,11 @@ class InfusionKeyManager {
   KeyBundle get keyBundle => _keyBundle ??= KeyBundle();
 
   InfusionKeyManager();
+
+  void initializeSignature(Uint8List signature) {
+    keyStore.initializeSignature(signature);
+    keyCache.initializeSignature(signature);
+  }
 
   Future<void> dispose() async {
     if (_keyStore != null) await _keyStore!.dispose();
