@@ -1,8 +1,6 @@
-import 'dart:typed_data';
-
 class KeyData {
   final String address;
-  final Uint8List key;
+  final List<int> key;
 
   KeyData({
     required this.address,
