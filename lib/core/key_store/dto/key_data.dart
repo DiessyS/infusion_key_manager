@@ -17,7 +17,7 @@ class KeyData {
   factory KeyData.fromJson(Map<String, dynamic> json) {
     return KeyData(
       address: json['address'],
-      key: json['key'],
+      key: json['key'].cast<int>() as List<int>,
     );
   }
 }
