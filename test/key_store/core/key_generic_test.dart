@@ -56,32 +56,74 @@ void main() {
       expect(retrievedKey, isNull);
     });
 
-    test('KeyGeneric dump should return all stored keys with prefix', () async {
+    test('KeyGeneric should extract all keys correctly', () async {
       FlutterSecureStorage.setMockInitialValues({});
       WidgetsFlutterBinding.ensureInitialized();
 
       final keyGeneric = KeyGeneric('test_prefix')
         ..initializeSignature(Uint8List(2));
-
-      final Uint8List testKey1 = Uint8List.fromList([1, 2, 3]);
-      final Uint8List testKey2 = Uint8List.fromList([4, 5, 6]);
+      final Uint8List testKey1 = Uint8List.fromList([1, 2, 3, 4, 5]);
+      final Uint8List testKey2 = Uint8List.fromList([6, 7, 8, 9, 10]);
+      const String address1 = 'test_key1';
+      const String address2 = 'test_key2';
       final KeyData keyData1 = KeyData(
         key: testKey1,
-        address: 'key1',
+        address: address1,
       );
       final KeyData keyData2 = KeyData(
         key: testKey2,
-        address: 'key2',
+        address: address2,
       );
 
       await keyGeneric.genericStore(key: keyData1);
       await keyGeneric.genericStore(key: keyData2);
 
-      final List<KeyData> allKeys = await keyGeneric.dump();
+      final Map<String, String> allKeys = await keyGeneric.extractAllKeys();
 
       expect(allKeys.length, 2);
-      expect(listEquals(allKeys[0].key, testKey1), true);
-      expect(listEquals(allKeys[1].key, testKey2), true);
+    });
+
+    test('KeyGeneric should dump and restore keys correctly', () async {
+      FlutterSecureStorage.setMockInitialValues({});
+      WidgetsFlutterBinding.ensureInitialized();
+
+      final keyGeneric = KeyGeneric('test_prefix')
+        ..initializeSignature(Uint8List(2));
+      final Uint8List testKey1 = Uint8List.fromList([1, 2, 3, 4, 5]);
+      final Uint8List testKey2 = Uint8List.fromList([6, 7, 8, 9, 10]);
+      const String address1 = 'test_key1';
+      const String address2 = 'test_key2';
+      final KeyData keyData1 = KeyData(
+        key: testKey1,
+        address: address1,
+      );
+      final KeyData keyData2 = KeyData(
+        key: testKey2,
+        address: address2,
+      );
+
+      await keyGeneric.genericStore(key: keyData1);
+      await keyGeneric.genericStore(key: keyData2);
+
+      final String dump = await keyGeneric.dump();
+      expect(dump.isNotEmpty, true);
+
+      // Clear all keys
+      await keyGeneric.genericDispose(
+          address: address1, disposeSignatureSystem: false);
+      await keyGeneric.genericDispose(
+          address: address2, disposeSignatureSystem: false);
+
+      // Restore from dump
+      await keyGeneric.restore(dump: dump);
+
+      final Uint8List? restoredKey1 =
+          await keyGeneric.genericRead(address: address1);
+      final Uint8List? restoredKey2 =
+          await keyGeneric.genericRead(address: address2);
+
+      expect(restoredKey1, testKey1);
+      expect(restoredKey2, testKey2);
     });
   });
 }

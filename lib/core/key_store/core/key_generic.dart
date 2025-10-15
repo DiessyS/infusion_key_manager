@@ -29,29 +29,28 @@ class KeyGeneric extends KeyStoreCore {
     }
   }
 
-  /// Dumps all keys stored with the current prefix.
-  /// Returns a list of KeyData objects containing the address and key.
-  /// The address (encoded) is the full key used in secure storage.
-  Future<List<KeyData>> dump() async {
+  Future<Map<String, String>> extractAllKeys() async {
     final Map<String, String> keys = await secureStorage.readAll();
+    keys.removeWhere((key, value) => !key.startsWith(getFullPrefix()));
+    return keys;
+  }
+
+  /// Dumps all keys stored with the current prefix into a string.
+  Future<String> dump() async {
+    final keys = await extractAllKeys();
 
     if (keys.isEmpty) {
-      return [];
+      return '';
     }
 
-    final String prefix = getFullPrefix();
-    final List<KeyData> keyDataList = keys.entries
-        .where(
-          (entry) => entry.key.startsWith(prefix),
-        )
-        .map(
-          (entry) => KeyData(
-            address: entry.key,
-            key: base64.decode(entry.value),
-          ),
-        )
-        .toList();
+    return jsonEncode(keys);
+  }
 
-    return keyDataList;
+  /// Restores keys from a previously dumped string.
+  Future<void> restore({required String dump}) async {
+    final Map<String, dynamic> decoded = jsonDecode(dump);
+    for (var entry in decoded.entries) {
+      await secureStorage.write(key: entry.key, value: entry.value);
+    }
   }
 }
