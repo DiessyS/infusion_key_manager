@@ -5,10 +5,10 @@ import 'package:infusion_key_manager/core/key_store/dto/key_data.dart';
 
 /// The keybundle is designed to store keys independently of the context
 class KeyBundle extends KeyGeneric {
-  KeyBundle({bool ignoreSignatureSystem = true}) : super('bundle') {
-    if (ignoreSignatureSystem) {
-      initializeSignature(Uint8List.fromList([0]));
-    }
+  KeyBundle() : super('bundle') {
+    // No need to initialize a signature
+    // the KeyBundle is not designed to be data bounded
+    initializeSignature(Uint8List.fromList([0]));
   }
 
   Future store({
