@@ -41,7 +41,7 @@ class KeyStoreCore {
 
     final hash = await sink.hash();
 
-    return "${getFullPrefix()}${hash.toString()}";
+    return "${getFullPrefix()}${_uint8listToRadixString(hash.bytes)}";
   }
 
   bool hasSignature() {
@@ -54,5 +54,9 @@ class KeyStoreCore {
 
   Future<void> dispose() async {
     _signature = Uint8List(0);
+  }
+
+  String _uint8listToRadixString(List<int> bytes) {
+    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
   }
 }
