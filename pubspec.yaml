@@ -16,8 +16,8 @@ dependencies:
       ref: main
 
   flutter_secure_storage: ^10.0.0
-  cryptography_plus: ^2.7.0
-  cryptography_flutter_plus: ^2.3.2
+  cryptography: ^2.9.0
+  cryptography_flutter: ^2.3.4
 
 dependency_overrides:
   js: ^0.7.2

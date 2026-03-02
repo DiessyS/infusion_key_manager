@@ -1,4 +1,4 @@
-import 'package:cryptography_plus/cryptography_plus.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 import 'package:infusion_key_manager/core/key_build/data/key_options.dart';
 

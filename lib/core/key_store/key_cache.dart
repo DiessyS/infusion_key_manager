@@ -29,7 +29,8 @@ class KeyCache extends KeyGeneric {
 
   Future<void> clearCache() async {
     final Map<String, String> keys = await extractAllKeys();
-    for (var key in keys.keys) {
+    final keysList = List.from(keys.keys);
+    for (var key in keysList) {
       await secureStorage.delete(key: key);
     }
   }
