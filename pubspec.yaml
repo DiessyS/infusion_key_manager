@@ -15,7 +15,7 @@ dependencies:
       url: https://github.com/DiessyS/serializable.git
       ref: main
 
-  flutter_secure_storage: ^9.2.2
+  flutter_secure_storage: ^10.0.0
   cryptography_plus: ^2.7.0
   cryptography_flutter_plus: ^2.3.2
 
