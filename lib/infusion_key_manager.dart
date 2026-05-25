@@ -3,18 +3,23 @@ library infusion_key_manager;
 import 'dart:typed_data';
 
 import 'package:infusion_key_manager/core/key_build/key_build.dart';
+import 'package:infusion_key_manager/core/key_exchange/key_exchange.dart';
 import 'package:infusion_key_manager/core/key_store/key_bundle.dart';
 import 'package:infusion_key_manager/core/key_store/key_cache.dart';
 import 'package:infusion_key_manager/core/key_store/key_store.dart';
 
 class InfusionKeyManager {
   KeyBuild? _keyBuild;
+  KeyExchange? _keyExchange;
   KeyStore? _keyStore;
   KeyCache? _keyCache;
   KeyBundle? _keyBundle;
 
   /// Argonid2 Wrapper for key derivation and equality check
   KeyBuild get keyBuild => _keyBuild ??= KeyBuild();
+
+  /// Hibrid key exchange protocol for secure key exchange between parties
+  KeyExchange get keyExchange => _keyExchange ??= KeyExchange();
 
   /// Securely stores a master key (one) on secure storage
   KeyStore get keyStore => _keyStore ??= KeyStore();
@@ -37,6 +42,7 @@ class InfusionKeyManager {
     _keyCache?.dispose();
     _keyBundle?.dispose();
     _keyBuild = null;
+    _keyExchange = null;
     _keyStore = null;
     _keyCache = null;
     _keyBundle = null;
