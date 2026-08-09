@@ -1,4 +1,5 @@
 enum ResourceUsageProfile {
+  saltOnly(0, 0, 0, 0),
   minimal(0, 47104, 3, 1),
   balanced(1, 65536, 3, 4),
   high(2, 131072, 3, 4),
