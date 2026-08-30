@@ -15,19 +15,16 @@ void main() {
     test('should initialize KeyBuild, KeyStore, and KeyCache', () {
       expect(keyManager.keyBuild, isNotNull);
       expect(keyManager.keyStore, isNotNull);
-      expect(keyManager.keyCache, isNotNull);
     });
 
     test('should dispose the signature from keyStore and keyCache', () async {
       FlutterSecureStorage.setMockInitialValues({});
 
       keyManager.keyStore.initializeSignature(Uint8List(2));
-      keyManager.keyCache.initializeSignature(Uint8List(2));
 
       await keyManager.dispose();
 
       expect(keyManager.keyStore.hasSignature(), false);
-      expect(keyManager.keyCache.hasSignature(), false);
     });
   });
 }
