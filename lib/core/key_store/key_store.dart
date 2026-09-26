@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:infusion_key_manager/core/key_store/core/key_generic.dart';
-import 'package:infusion_key_manager/core/key_store/dto/key_data.dart';
+import 'package:infusion_key_manager/core/key_store/data/key_data.dart';
 
 class KeyStore extends KeyGeneric {
   final String address = 'master';

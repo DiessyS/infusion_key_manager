@@ -6,12 +6,14 @@ import 'package:infusion_key_manager/core/key_build/key_build.dart';
 import 'package:infusion_key_manager/core/key_exchange/key_exchange.dart';
 import 'package:infusion_key_manager/core/key_store/key_bundle.dart';
 import 'package:infusion_key_manager/core/key_store/key_store.dart';
+import 'package:infusion_key_manager/core/signature/signature.dart';
 
 class InfusionKeyManager {
   KeyBuild? _keyBuild;
   KeyExchange? _keyExchange;
   KeyStore? _keyStore;
   KeyBundle? _keyBundle;
+  Signature? _signature;
 
   /// Argonid2 Wrapper for key derivation and equality check
   KeyBuild get keyBuild => _keyBuild ??= KeyBuild();
@@ -25,6 +27,9 @@ class InfusionKeyManager {
   /// Securely stores multiple keys on secure storage
   KeyBundle get keyBundle => _keyBundle ??= KeyBundle();
 
+  /// Ed25519 digital signature operations
+  Signature get signature => _signature ??= Signature();
+
   InfusionKeyManager();
 
   void initializeSignature(Uint8List signature) {
@@ -34,9 +39,11 @@ class InfusionKeyManager {
   Future<void> dispose() async {
     if (_keyStore != null) await _keyStore!.dispose();
     _keyBundle?.dispose();
+    _signature?.dispose();
     _keyBuild = null;
     _keyExchange = null;
     _keyStore = null;
     _keyBundle = null;
+    _signature = null;
   }
 }

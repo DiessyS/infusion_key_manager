@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:infusion_key_manager/core/key_store/dto/key_data.dart';
+import 'package:infusion_key_manager/core/key_store/data/key_data.dart';
 import 'package:infusion_key_manager/core/key_store/key_bundle.dart';
 
 void main() {
@@ -31,8 +31,7 @@ void main() {
       expect(retrievedKey, testKey);
     });
 
-    test('KeyBundle should store multiple keys and read them correctly',
-        () async {
+    test('KeyBundle should store multiple keys and read them correctly', () async {
       FlutterSecureStorage.setMockInitialValues({});
       WidgetsFlutterBinding.ensureInitialized();
 

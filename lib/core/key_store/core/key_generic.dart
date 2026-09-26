@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:infusion_key_manager/core/key_store/core/key_store_core.dart';
-import 'package:infusion_key_manager/core/key_store/dto/key_data.dart';
+import 'package:infusion_key_manager/core/key_store/data/key_data.dart';
 
 class KeyGeneric extends KeyStoreCore {
   KeyGeneric(String prefix) : super(prefix: prefix);
@@ -20,8 +20,7 @@ class KeyGeneric extends KeyStoreCore {
     return key == null ? null : base64.decode(key);
   }
 
-  Future<void> genericDispose(
-      {required String address, bool disposeSignatureSystem = true}) async {
+  Future<void> genericDispose({required String address, bool disposeSignatureSystem = true}) async {
     final String keyAddress = await buildAddress(keyName: address);
     await secureStorage.delete(key: keyAddress);
     if (disposeSignatureSystem) {
