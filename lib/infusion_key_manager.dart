@@ -37,8 +37,8 @@ class InfusionKeyManager {
   }
 
   Future<void> dispose() async {
-    if (_keyStore != null) await _keyStore!.dispose();
-    _keyBundle?.dispose();
+    await _keyStore!.dispose();
+    await _keyBundle?.dispose();
     _signature?.dispose();
     _keyBuild = null;
     _keyExchange = null;

@@ -8,19 +8,16 @@ import 'package:ml_kem/ml_kem.dart';
 
 /// Hybrid Key Exchange class that combines both classical and post-quantum key exchange algorithms (X25519 and ML-KEM).
 class KeyExchange {
-  Future<HybridKeyPair> generateKeyPair() async {
+  Future<HybridKeyPair> generateKeyPair({bool skipQuantumKey = false}) async {
     final HybridKeyPair keyPair = HybridKeyPair();
 
     // Classic
     final algorithm = X25519();
     final classicKeyPair = await algorithm.newKeyPair();
-    keyPair.cPublicKey =
-        Uint8List.fromList((await classicKeyPair.extractPublicKey()).bytes);
-    keyPair.cPrivateKey =
-        Uint8List.fromList(await classicKeyPair.extractPrivateKeyBytes());
+    keyPair.cPublicKey = Uint8List.fromList((await classicKeyPair.extractPublicKey()).bytes);
+    keyPair.cPrivateKey = Uint8List.fromList(await classicKeyPair.extractPrivateKeyBytes());
 
-    // For debugging and testing purposes
-    if (Platform.isWindows) {
+    if (skipQuantumKey) {
       return keyPair;
     }
 
@@ -34,8 +31,8 @@ class KeyExchange {
   }
 
   // encapsulate
-  Future<HybridEncapsulatedData> encapsulate(
-      Uint8List cPublicKey, Uint8List qPublicKey) async {
+  Future<HybridEncapsulatedData> encapsulate(Uint8List cPublicKey, Uint8List qPublicKey,
+      {bool skipQuantumKey = false}) async {
     HybridEncapsulatedData encapsulatedData = HybridEncapsulatedData();
 
     // classic
@@ -47,12 +44,10 @@ class KeyExchange {
     );
 
     final classicSharedSecret = await sharedSecretKey.extractBytes();
-    encapsulatedData.cEncapsulatedKey =
-        Uint8List.fromList((await ephemeral.extractPublicKey()).bytes);
+    encapsulatedData.cEncapsulatedKey = Uint8List.fromList((await ephemeral.extractPublicKey()).bytes);
 
-    if (Platform.isWindows) {
-      encapsulatedData.mixedSharedSecret =
-          Uint8List.fromList(classicSharedSecret);
+    if (skipQuantumKey) {
+      encapsulatedData.mixedSharedSecret = Uint8List.fromList(classicSharedSecret);
       return encapsulatedData;
     }
 
@@ -70,23 +65,20 @@ class KeyExchange {
     return encapsulatedData;
   }
 
-  Future<Uint8List> decapsulate(
-      HybridKeyPair myKeyPair, HybridEncapsulatedData encapsulatedData) async {
+  Future<Uint8List> decapsulate(HybridKeyPair myKeyPair, HybridEncapsulatedData encapsulatedData,
+      {bool skipQuantumKey = false}) async {
     // classic
     final algorithm = X25519();
     final myClassicKeyPair = SimpleKeyPairData(
       myKeyPair.cPrivateKey,
-      publicKey:
-          SimplePublicKey(myKeyPair.cPublicKey, type: KeyPairType.x25519),
+      publicKey: SimplePublicKey(myKeyPair.cPublicKey, type: KeyPairType.x25519),
       type: KeyPairType.x25519,
     );
     final sharedSecretKey = await algorithm.sharedSecretKey(
       keyPair: myClassicKeyPair,
-      remotePublicKey: SimplePublicKey(encapsulatedData.cEncapsulatedKey,
-          type: KeyPairType.x25519),
+      remotePublicKey: SimplePublicKey(encapsulatedData.cEncapsulatedKey, type: KeyPairType.x25519),
     );
-    final classicSharedSecret =
-        Uint8List.fromList(await sharedSecretKey.extractBytes());
+    final classicSharedSecret = Uint8List.fromList(await sharedSecretKey.extractBytes());
 
     if (Platform.isWindows) {
       return classicSharedSecret;
