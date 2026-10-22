@@ -19,12 +19,9 @@ dependencies:
       url: https://github.com/DiessyS/ml_kem.git
       ref: main
 
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.2.0
   cryptography: ^2.9.0
   cryptography_flutter: ^2.3.4
-
-dependency_overrides:
-  js: ^0.7.2
 
 dev_dependencies:
   flutter_test:
